@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Layer72 – Impressão 3D em resina e corte CNC</title>
+<meta name="description" content="Impressão 3D em resina e corte CNC com preço na hora, nota fiscal e entrega a partir de 72 horas.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Cpolygon points=%2750,92 96,79 50,66 4,79%27 fill=%27%235B3CC4%27/%3E%3Cpolygon points=%2750,68 96,55 50,42 4,55%27 fill=%27%238E7BE0%27/%3E%3Cpolygon points=%2750,44 96,31 50,18 4,31%27 fill=%27%23F2A541%27/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: faixa escura de abertura com a peça sendo construída camada por camada; o resto em grade clara, com a calculadora como peça central. */
+:root{
+  --violeta:#5B3CC4; --lavanda:#8E7BE0; --ambar:#F2A541; --grafite:#1C1B29; --nevoa:#F4F2FB;
+  --bg:#FFFFFF; --bg-alt:#F4F2FB; --ink:#1C1B29; --muted:#5E5A72; --line:#E2DEF2; --card:#FFFFFF;
+  --accent:#5B3CC4; --accent-ink:#FFFFFF; --hi:#F2A541; --ok:#1F8A5B;
+  --f-display:"Poppins", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --r:14px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14131D; --bg-alt:#1C1B29; --ink:#EEEBF8; --muted:#A9A4C2; --line:#2E2B42; --card:#1E1D2C;
+    --accent:#8E7BE0; --accent-ink:#14131D; --hi:#F2A541; --ok:#4CC38A; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14131D; --bg-alt:#1C1B29; --ink:#EEEBF8; --muted:#A9A4C2; --line:#2E2B42; --card:#1E1D2C;
+  --accent:#8E7BE0; --accent-ink:#14131D; --hi:#F2A541; --ok:#4CC38A; color-scheme: dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--hi);outline-offset:2px;border-radius:6px}
+h1,h2,h3{font-family:var(--f-display);line-height:1.12;text-wrap:balance;margin:0}
+h2{font-size:clamp(1.7rem,3.2vw,2.4rem);font-weight:700;letter-spacing:-.01em}
+h3{font-size:1.12rem;font-weight:600}
+p{margin:0}
+.wrap{max-width:1160px;margin:0 auto;padding:0 clamp(16px,4vw,32px)}
+.num{font-variant-numeric:tabular-nums}
+.kicker{font-family:var(--f-display);font-weight:600;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.lead{color:var(--muted);max-width:62ch;font-size:1.05rem}
+section{padding:clamp(56px,8vw,96px) 0}
+.sec-head{display:grid;gap:12px;margin-bottom:36px}
+
+/* header */
+header.top{position:sticky;top:0;z-index:20;background:rgba(28,27,41,.92);backdrop-filter:blur(8px);color:#fff}
+.top .wrap{display:flex;align-items:center;gap:24px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff}
+.brand svg{width:34px;height:34px}
+.brand b{font-family:var(--f-display);font-weight:700;font-size:1.35rem;letter-spacing:-.01em}
+.brand b span{color:var(--ambar)}
+nav.main{display:flex;gap:22px;margin-left:auto}
+nav.main a{color:#D9D4F2;text-decoration:none;font-size:.93rem}
+nav.main a:hover{color:#fff}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;cursor:pointer;font-family:var(--f-display);font-weight:600;font-size:.95rem;padding:12px 20px;border-radius:999px;text-decoration:none;transition:transform .15s ease, background .15s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn-amber{background:var(--ambar);color:var(--grafite)}
+.btn-ghost{background:transparent;color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.35)}
+.btn-primary{background:var(--accent);color:var(--accent-ink)}
+@media (max-width:860px){nav.main{display:none}.top .btn{margin-left:auto}}
+
+/* hero */
+.hero{background:var(--grafite);color:#fff;padding:56px 0 40px;overflow:hidden;position:relative}
+.hero .wrap{display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center}
+.hero h1{font-size:clamp(2.3rem,5.4vw,4.1rem);font-weight:700;letter-spacing:-.025em}
+.hero h1 em{font-style:normal;color:var(--ambar)}
+.hero .lead{color:#C9C3E6;margin-top:18px}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.specs{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+.spec{border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:8px 12px;font-size:.82rem;color:#D9D4F2}
+.spec b{display:block;font-family:var(--f-display);font-size:1.05rem;color:#fff}
+.stage{position:relative;aspect-ratio:1/1;max-width:520px;width:100%;justify-self:center}
+#build{width:100%;height:100%;display:block}
+.hud{position:absolute;left:0;right:0;bottom:6px;display:flex;justify-content:space-between;font-family:var(--f-display);font-size:.78rem;color:#B9B2E0;letter-spacing:.04em}
+.hud b{color:var(--ambar);font-weight:600}
+@media (max-width:860px){.hero .wrap{grid-template-columns:1fr}.stage{max-width:380px}}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;counter-reset:s}
+.step{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;display:grid;gap:10px;position:relative}
+.step .n{font-family:var(--f-display);font-weight:700;font-size:2.2rem;color:var(--lavanda);line-height:1}
+.step p{color:var(--muted)}
+@media (max-width:760px){.steps{grid-template-columns:1fr}}
+
+/* calculator */
+#orcamento{background:var(--bg-alt)}
+.calc{display:grid;grid-template-columns:1.25fr .9fr;gap:22px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px}
+.tabs{display:flex;gap:6px;background:var(--bg-alt);padding:5px;border-radius:999px;width:max-content;margin-bottom:22px}
+.tabs button{border:0;background:transparent;color:var(--muted);font-family:var(--f-display);font-weight:600;padding:9px 18px;border-radius:999px;cursor:pointer;font-size:.92rem}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
+.drop{border:2px dashed var(--line);border-radius:14px;padding:18px;display:flex;gap:14px;align-items:center;cursor:pointer;transition:border-color .15s}
+.drop:hover,.drop.over{border-color:var(--accent)}
+.drop svg{flex:none;width:40px;height:40px}
+.drop strong{font-family:var(--f-display);display:block}
+.drop small{color:var(--muted)}
+.drop input{position:absolute;width:1px;height:1px;opacity:0}
+.filemeta{font-size:.85rem;color:var(--ok);margin-top:8px;min-height:1.3em}
+.filemeta.err{color:#C0392B}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:18px}
+.f{display:grid;gap:6px}
+.f label{font-size:.82rem;font-weight:600;color:var(--ink)}
+.f small{color:var(--muted);font-size:.76rem}
+.f input,.f select{font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+.f input:focus,.f select:focus{border-color:var(--accent);outline:none}
+.full{grid-column:1/-1}
+@media (max-width:900px){.calc{grid-template-columns:1fr}}
+@media (max-width:480px){.grid{grid-template-columns:1fr}}
+.quote{background:var(--grafite);color:#fff;border-radius:18px;padding:26px;display:grid;gap:16px}
+.quote .price{font-family:var(--f-display);font-weight:700;font-size:clamp(2.4rem,5vw,3.2rem);letter-spacing:-.02em;line-height:1}
+.quote .per{color:#C9C3E6;font-size:.9rem}
+.qrows{display:grid;gap:8px;border-top:1px solid rgba(255,255,255,.14);padding-top:14px;font-size:.88rem}
+.qrows div{display:flex;justify-content:space-between;gap:12px;color:#D9D4F2}
+.qrows div b{color:#fff;font-weight:600}
+.eta{display:flex;align-items:center;gap:10px;background:rgba(242,165,65,.14);border:1px solid rgba(242,165,65,.4);border-radius:12px;padding:10px 12px;font-size:.9rem}
+.eta b{color:var(--ambar);font-family:var(--f-display)}
+.quote .note{font-size:.76rem;color:#A59FC8}
+.copied{font-size:.8rem;color:var(--ambar);min-height:1.2em}
+
+
+.viewer{position:relative;height:340px;border-radius:14px;overflow:hidden;background:#1C1B29;margin-top:14px}
+.viewer canvas{display:block;width:100%;height:100%;cursor:grab}
+.viewer canvas:active{cursor:grabbing}
+.vbadge{position:absolute;top:12px;left:12px;background:rgba(91,60,196,.85);color:#fff;font-size:.76rem;font-weight:600;padding:4px 10px;border-radius:999px;max-width:60%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vdims{position:absolute;left:12px;bottom:12px;color:#F2A541;font-family:var(--f-display);font-weight:600;font-size:.9rem;text-shadow:0 1px 6px rgba(0,0,0,.6)}
+.vtools{position:absolute;top:10px;right:10px;display:flex;gap:6px}
+.vtools button{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:999px;font:600 .76rem var(--f-body);padding:5px 11px;cursor:pointer}
+.vtools button[aria-pressed="true"]{background:rgba(242,165,65,.25);border-color:rgba(242,165,65,.6)}
+.vfallback{position:absolute;inset:auto 16px 50% 16px;color:#D9D4F2;text-align:center;font-size:.9rem}
+.vhelp{font-size:.76rem;color:var(--muted);margin-top:6px}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0 0}
+.facts div{background:var(--bg-alt);border-radius:10px;padding:10px 12px}
+.facts dt{font-size:.72rem;color:var(--muted);font-weight:600}
+.facts dd{margin:2px 0 0;font-family:var(--f-display);font-weight:600;font-size:.95rem}
+@media (max-width:640px){.facts{grid-template-columns:repeat(2,1fr)}}
+.send{display:grid;gap:10px;border-top:1px solid rgba(255,255,255,.14);padding-top:14px}
+.sendt{font-family:var(--f-display);font-weight:600}
+.send .f label{color:#D9D4F2}
+.send .f input{background:#26243A;border-color:#3A3756;color:#fff}
+.sendmsg{font-size:.84rem;color:#7FE0AE;min-height:1.2em}
+.sendmsg.warn{color:#FFC98A}
+.sendmsg a{color:#F2A541}
+.formmsg.warn{color:#C0392B}
+
+.unitrow{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-top:8px}
+.unitrow .filemeta{margin-top:0}
+.unit{display:inline-flex;align-items:center;gap:4px;background:var(--bg-alt);border-radius:999px;padding:4px 4px 4px 12px;font-size:.78rem;color:var(--muted)}
+.unit span{margin-right:4px;font-weight:600}
+.unit button{border:0;background:transparent;color:var(--muted);font:600 .82rem var(--f-display);padding:6px 12px;border-radius:999px;cursor:pointer}
+.unit button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.flabel{font-size:.82rem;font-weight:600}
+.orient{display:flex;flex-wrap:wrap;gap:8px}
+.orient button{font:600 .86rem var(--f-display);color:var(--accent);background:var(--bg);border:1.5px solid var(--accent);border-radius:10px;padding:8px 12px;cursor:pointer;font-variant-numeric:tabular-nums}
+.orient button:hover{background:var(--accent);color:var(--accent-ink)}
+.orient button.alt{color:var(--muted);border-color:var(--line)}
+.orient button.alt:hover{background:var(--bg-alt);color:var(--ink)}
+.orient button.on{background:var(--bg-alt);color:var(--ink);border-color:var(--ink)}
+.ship{display:grid;gap:10px;border-top:1px solid rgba(255,255,255,.14);padding-top:14px}
+.ship .f label{color:#D9D4F2}
+.ship .f input{background:#26243A;border-color:#3A3756;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.fopts{display:grid;gap:8px}
+.fopt{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;background:#26243A;border:1.5px solid #3A3756;border-radius:12px;padding:10px 12px;cursor:pointer}
+.fopt:has(input:checked){border-color:var(--ambar);background:rgba(242,165,65,.10)}
+.fopt input{accent-color:var(--ambar);width:16px;height:16px;margin:0}
+.fopt .fn{font-family:var(--f-display);font-weight:600;font-size:.92rem;display:grid}
+.fopt .fn small{font-family:var(--f-body);font-weight:400;font-size:.76rem;color:#B9B2E0}
+.fopt b{font-family:var(--f-display);font-size:.95rem}
+.fopt.off{opacity:.5;cursor:not-allowed}
+.finfo{font-size:.76rem;color:#A59FC8}
+.qtotal{display:grid;grid-template-columns:1fr auto;gap:2px 12px;background:rgba(91,60,196,.35);border-radius:12px;padding:12px 14px}
+.qtotal span{font-weight:600}
+.qtotal b{font-family:var(--f-display);font-size:1.35rem;color:#fff}
+.qtotal small{grid-column:1/-1;color:#D9D4F2;font-size:.8rem}
+/* materials */
+.mats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.mat{border:1px solid var(--line);border-radius:var(--r);padding:20px;display:grid;gap:10px;background:var(--card)}
+.swatch{height:56px;border-radius:10px;position:relative;overflow:hidden}
+.swatch::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.12) 0 2px,transparent 2px 6px)}
+.mat p{color:var(--muted);font-size:.9rem}
+.mat .tag{font-size:.8rem;font-weight:600;color:var(--accent)}
+@media (max-width:980px){.mats{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.mats{grid-template-columns:1fr}}
+.tbl{width:100%;border-collapse:collapse;font-size:.93rem;margin-top:26px}
+.tbl th,.tbl td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line)}
+.tbl th{font-family:var(--f-display);font-weight:600;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.tbl td.num{text-align:right}
+.tblwrap{overflow-x:auto}
+
+/* router */
+.split{display:grid;grid-template-columns:1fr 1.2fr;gap:40px;align-items:start}
+@media (max-width:860px){.split{grid-template-columns:1fr}}
+.list{display:grid;gap:10px;margin-top:20px;padding:0;list-style:none}
+.list li{display:flex;gap:10px;align-items:flex-start;color:var(--muted)}
+.list li::before{content:"";flex:none;width:14px;height:8px;margin-top:8px;background:var(--hi);border-radius:4px;box-shadow:0 5px 0 var(--lavanda),0 -5px 0 var(--accent)}
+
+/* plans */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.plan{border:1px solid var(--line);border-radius:18px;padding:26px;display:grid;gap:14px;background:var(--card);align-content:start}
+.plan.feat{border:2px solid var(--accent);position:relative}
+.plan.feat::before{content:"Mais escolhido";position:absolute;top:-12px;left:22px;background:var(--accent);color:var(--accent-ink);font-size:.74rem;font-weight:600;padding:3px 10px;border-radius:999px}
+.plan .pp{font-family:var(--f-display);font-weight:700;font-size:2rem}
+.plan .pp small{font-size:.9rem;color:var(--muted);font-weight:500}
+.plan ul{margin:0;padding-left:18px;color:var(--muted);display:grid;gap:6px;font-size:.93rem}
+@media (max-width:860px){.plans{grid-template-columns:1fr}}
+
+/* who */
+.who{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.who div{border-top:3px solid var(--accent);padding-top:14px;display:grid;gap:6px}
+.who div:nth-child(2){border-color:var(--lavanda)}
+.who div:nth-child(3){border-color:var(--hi)}
+.who div:nth-child(4){border-color:var(--ink)}
+.who p{color:var(--muted);font-size:.92rem}
+@media (max-width:860px){.who{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:480px){.who{grid-template-columns:1fr}}
+
+/* faq */
+#faq{background:var(--bg-alt)}
+.faq{display:grid;gap:10px;max-width:820px}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 20px}
+summary{cursor:pointer;font-family:var(--f-display);font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--accent);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"–"}
+details p{color:var(--muted);margin-top:10px}
+
+/* contact */
+.contact{display:grid;grid-template-columns:1fr 1.1fr;gap:40px}
+@media (max-width:860px){.contact{grid-template-columns:1fr}}
+.cinfo{display:grid;gap:14px;margin-top:22px}
+.cinfo div{display:grid}
+.cinfo small{color:var(--muted);font-size:.8rem}
+.cinfo b{font-family:var(--f-display);font-size:1.05rem}
+textarea{font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;min-height:120px;resize:vertical}
+.formmsg{margin-top:12px;font-size:.9rem;color:var(--ok);min-height:1.3em}
+footer{background:var(--grafite);color:#B9B2E0;padding:36px 0;font-size:.86rem}
+footer .wrap{display:flex;flex-wrap:wrap;gap:16px 32px;align-items:center;justify-content:space-between}
+footer .brand b{font-size:1.1rem}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#inicio" aria-label="Layer72, início">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <polygon points="50,92 96,79 50,66 4,79" fill="#5B3CC4"/>
+        <polygon points="50,68 96,55 50,42 4,55" fill="#8E7BE0"/>
+        <polygon points="50,44 96,31 50,18 4,31" fill="#F2A541"/>
+      </svg>
+      <b>layer<span>72</span></b>
+    </a>
+    <nav class="main" aria-label="Seções">
+      <a href="#como">Como funciona</a>
+      <a href="#orcamento">Orçamento</a>
+      <a href="#materiais">Materiais</a>
+      <a href="#router">Corte CNC</a>
+      <a href="#planos">Planos</a>
+      <a href="#faq">Dúvidas</a>
+    </nav>
+    <a class="btn btn-amber" href="#orcamento">Calcular preço</a>
+  </div>
+</header>
+
+<main id="inicio">
+<section class="hero" aria-labelledby="h-hero">
+  <div class="wrap">
+    <div>
+      <p class="kicker" style="color:#B9A9FF">Impressão 3D em resina · Corte CNC</p>
+      <h1 id="h-hero" style="margin-top:14px">Envie o arquivo.<br>Peça na mão em <em>72 horas.</em></h1>
+      <p class="lead">Protótipos, peças de engenharia, miniaturas e cortes em acrílico, MDF e ACM. Preço na hora, nota fiscal e medida conferida antes de sair.</p>
+      <div class="ctas">
+        <a class="btn btn-amber" href="#orcamento">Enviar STL e ver o preço</a>
+        <a class="btn btn-ghost" href="#router">Cortar chapa (DXF)</a>
+      </div>
+      <div class="specs" aria-label="Capacidade">
+        <div class="spec"><b class="num">50 µm</b>altura de camada</div>
+        <div class="spec"><b class="num">228×128×230 mm</b>maior peça em resina</div>
+        <div class="spec"><b class="num">420×390 mm</b>área de corte CNC</div>
+        <div class="spec"><b>NF-e</b>em todo pedido</div>
+      </div>
+    </div>
+    <div class="stage">
+      <canvas id="build" width="520" height="520" role="img" aria-label="Animação de uma peça sendo construída camada por camada"></canvas>
+      <div class="hud"><span>CAMADA <b id="layerN" class="num">0</b> / <span id="layerT" class="num">0</span></span><span>405 nm · 50 µm</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="como" aria-labelledby="h-como">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker">Como funciona</p>
+      <h2 id="h-como">Do arquivo à peça em três passos</h2>
+    </div>
+    <div class="steps">
+      <div class="step"><span class="n">01</span><h3>Envie o arquivo</h3><p>STL para impressão em resina ou DXF para corte. A calculadora lê volume e medidas direto do arquivo e mostra a peça em 3D.</p></div>
+      <div class="step"><span class="n">02</span><h3>Veja o preço na hora</h3><p>Escolha material, acabamento e quantidade. Revisamos o arquivo e confirmamos o pedido com pagamento por Pix ou cartão.</p></div>
+      <div class="step"><span class="n">03</span><h3>Receba em 72 horas</h3><p>Peça limpa, curada e conferida, com nota fiscal. Retirada no local ou envio para todo o Brasil.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="orcamento" aria-labelledby="h-orc">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker">Orçamento instantâneo</p>
+      <h2 id="h-orc">Calcule o preço da sua peça</h2>
+      <p class="lead">Envie o STL (impressão em resina) ou o DXF (corte CNC). As medidas são lidas do arquivo, a peça aparece em 3D e o preço sai na hora. O arquivo é lido no seu navegador.</p>
+    </div>
+    <div class="calc">
+      <div class="panel">
+        <div class="tabs" role="tablist" aria-label="Tipo de serviço">
+          <button role="tab" id="tab-res" aria-selected="true" aria-controls="pane-res">Resina 3D · STL</button>
+          <button role="tab" id="tab-cnc" aria-selected="false" aria-controls="pane-cnc">Corte CNC · DXF</button>
+        </div>
+
+        <label class="drop" id="drop" for="file">
+          <svg viewBox="0 0 40 40" aria-hidden="true"><polygon points="20,36 38,29 20,22 2,29" fill="#5B3CC4"/><polygon points="20,27 38,20 20,13 2,20" fill="#8E7BE0"/><polygon points="20,18 38,11 20,4 2,11" fill="#F2A541"/></svg>
+          <span><strong id="dropTitle">Arraste o STL aqui ou clique para escolher</strong><small id="dropHint">Binário ou ASCII, em mm ou polegadas</small></span>
+          <input type="file" id="file" accept=".stl">
+        </label>
+        <div class="unitrow">
+          <p class="filemeta" id="filemeta" aria-live="polite"></p>
+          <div class="unit" role="group" aria-label="Unidade do arquivo">
+            <span>Unidade do arquivo</span>
+            <button type="button" id="uMm" data-u="mm" aria-pressed="true">mm</button>
+            <button type="button" id="uIn" data-u="in" aria-pressed="false">polegada</button>
+          </div>
+        </div>
+
+        <div class="viewer" id="viewer">
+          <div class="vbadge" id="vbadge">Exemplo</div>
+          <div class="vdims num" id="vdims"></div>
+          <div class="vtools">
+            <button type="button" id="vRotate" aria-pressed="true" title="Liga ou desliga o giro da vista (não muda a orientação de impressão)">Vista girando</button>
+            <button type="button" id="vReset">Centralizar</button>
+          </div>
+          <p class="vfallback" id="vfallback" hidden>Não foi possível abrir o visualizador 3D neste navegador. O cálculo continua funcionando.</p>
+        </div>
+        <p class="vhelp">Arraste para girar · role para aproximar · a grade mostra a área útil da máquina</p>
+
+        <div id="pane-res" role="tabpanel" aria-labelledby="tab-res">
+          <dl class="facts" aria-label="Medidas lidas do STL">
+            <div><dt>Volume</dt><dd class="num" id="fVol">—</dd></div>
+            <div><dt>Dimensões (L × P × A)</dt><dd class="num" id="fDims">—</dd></div>
+            <div><dt>Área superficial</dt><dd class="num" id="fSurf">—</dd></div>
+            <div><dt>Área na plataforma</dt><dd class="num" id="fFoot">—</dd></div>
+          </dl>
+          <div class="grid">
+            <div class="f full"><span class="flabel" id="orientLbl">Orientação na impressora</span>
+              <div class="orient" role="group" aria-labelledby="orientLbl">
+                <button type="button" data-r="x" title="Girar 90° em torno do eixo X"><span aria-hidden="true">↻</span> 90° X</button>
+                <button type="button" data-r="y" title="Girar 90° em torno do eixo Y"><span aria-hidden="true">↻</span> 90° Y</button>
+                <button type="button" data-r="z" title="Girar 90° em torno do eixo Z"><span aria-hidden="true">↻</span> 90° Z</button>
+                <button type="button" data-r="auto" class="alt">Menor altura</button>
+                <button type="button" data-r="orig" class="alt">Original do arquivo</button>
+              </div>
+              <small id="orientInfo" class="num" aria-live="polite"></small></div>
+            <div class="f"><label for="resin">Resina</label>
+              <select id="resin">
+                <option value="padrao">Padrão cinza</option>
+                <option value="tough">Tough (ABS-like)</option>
+                <option value="cristal">Cristal transparente</option>
+                <option value="flex">Flexível</option>
+              </select></div>
+            <div class="f"><label for="fin">Acabamento</label>
+              <select id="fin">
+                <option value="none">Sem acabamento</option>
+                <option value="pint">Pintura padrão (primer + tinta)</option>
+                <option value="text">Texturizado</option>
+                <option value="aero">Pintura com aerógrafo</option>
+              </select></div>
+            <div class="f"><label for="qty">Quantidade</label><input id="qty" type="number" min="1" step="1" value="1" inputmode="numeric"></div>
+          </div>
+        </div>
+
+        <div id="pane-cnc" role="tabpanel" aria-labelledby="tab-cnc" hidden>
+          <dl class="facts" aria-label="Medidas lidas do DXF">
+            <div><dt>Dimensões (L × A)</dt><dd class="num" id="cDims">—</dd></div>
+            <div><dt>Comprimento de corte</dt><dd class="num" id="cLen">—</dd></div>
+            <div><dt>Contornos e furos</dt><dd class="num" id="cCount">—</dd></div>
+            <div><dt>Unidade do desenho</dt><dd id="cUnit">—</dd></div>
+          </dl>
+          <div class="grid">
+            <div class="f"><label for="cmat">Material e espessura</label>
+              <select id="cmat">
+                <option value="acr2">Acrílico cristal 2 mm</option>
+                <option value="acr3" selected>Acrílico cristal 3 mm</option>
+                <option value="acr4">Acrílico cristal 4 mm</option>
+                <option value="acr5">Acrílico cristal 5 mm</option>
+                <option value="acr10">Acrílico cristal 10 mm</option>
+                <option value="acm3">ACM 3 mm</option>
+                <option value="mdf2">MDF cru 2 mm</option>
+                <option value="mdf3">MDF cru 3 mm</option>
+              </select></div>
+            <div class="f"><label for="cqty">Quantidade</label><input id="cqty" type="number" min="1" step="1" value="1" inputmode="numeric"></div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="quote" aria-label="Resultado do orçamento">
+        <div aria-live="polite">
+          <p class="per" id="qlabel">Preço estimado</p>
+          <p class="price num" id="qprice">R$ 0</p>
+          <p class="per num" id="qper"></p>
+        </div>
+        <div class="eta"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="#F2A541" stroke-width="2"/><path d="M12 7v5l3 2" stroke="#F2A541" stroke-width="2" fill="none" stroke-linecap="round"/></svg><span>Prazo: <b id="qeta">72 h</b></span></div>
+        <div class="qrows" id="qrows"></div>
+
+        <div class="ship">
+          <p class="sendt">Entrega pelos Correios</p>
+          <div class="f"><label for="cep">CEP de entrega</label><input id="cep" inputmode="numeric" autocomplete="postal-code" placeholder="00000-000" maxlength="9"></div>
+          <div class="fopts" id="freteOpts" role="radiogroup" aria-label="Opções de entrega"></div>
+          <p class="finfo num" id="freteInfo" aria-live="polite"></p>
+          <div class="qtotal" id="qtotal" hidden><span>Total com frete</span><b id="qtotalv" class="num"></b><small id="qtotaleta"></small></div>
+        </div>
+
+        <form class="send" id="sendForm" novalidate>
+          <p class="sendt">Enviar este orçamento</p>
+          <div class="f"><label for="sn">Nome</label><input id="sn" name="nome" autocomplete="name" required></div>
+          <div class="f"><label for="se">E-mail</label><input id="se" name="email" type="email" autocomplete="email" required></div>
+          <div class="f"><label for="sp">WhatsApp</label><input id="sp" name="telefone" type="tel" autocomplete="tel" inputmode="tel"></div>
+          <div class="f"><label for="so">Observações</label><input id="so" name="observacoes" placeholder="Prazo, cor, uso da peça"></div>
+          <button class="btn btn-amber" id="sendBtn" type="submit">Enviar orçamento com o arquivo</button>
+          <p class="sendmsg" id="sendmsg" aria-live="polite"></p>
+        </form>
+        <p class="note">Enviado para contato@zirconiumlabs.com. Frete estimado pela tabela dos Correios e confirmado no orçamento final. Valores com impostos; o preço é confirmado após a revisão do arquivo, sem custo. Pedido mínimo: R$ 49 em resina e R$ 59 em corte.</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section id="materiais" aria-labelledby="h-mat">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker">Materiais e acabamentos</p>
+      <h2 id="h-mat">Resinas para cada uso</h2>
+      <p class="lead">Fotopolímeros curados a 405 nm. A resistência de cada lote é conferida em ensaio interno e a medida em controle dimensional antes do envio.</p>
+    </div>
+    <div class="mats">
+      <div class="mat"><div class="swatch" style="background:#8A8D93"></div><h3>Padrão cinza</h3><p>Protótipos visuais, maquetes e peças de detalhe fino. O melhor custo para iterar rápido.</p><span class="tag num">a partir de R$ 0,23/cm³ de material</span></div>
+      <div class="mat"><div class="swatch" style="background:#5F6470"></div><h3>Tough (ABS-like)</h3><p>Encaixes, presilhas e carcaças que precisam flexionar sem quebrar. Indicada para teste funcional.</p><span class="tag num">a partir de R$ 0,35/cm³ de material</span></div>
+      <div class="mat"><div class="swatch" style="background:linear-gradient(135deg,#DDE7F0,#AFC3D6)"></div><h3>Cristal transparente</h3><p>Lentes de protótipo, visores, guias de luz e peças em que é preciso ver o interior.</p><span class="tag num">a partir de R$ 0,35/cm³ de material</span></div>
+      <div class="mat"><div class="swatch" style="background:#2E2C3A"></div><h3>Flexível</h3><p>Vedações de protótipo, batentes, pegas e peças que precisam amortecer impacto.</p><span class="tag num">a partir de R$ 0,42/cm³ de material</span></div>
+    </div>
+    <div class="tblwrap">
+      <table class="tbl">
+        <thead><tr><th>Acabamento</th><th>Como cobramos</th><th>Mínimo por peça</th><th>Prazo extra</th></tr></thead>
+        <tbody>
+          <tr><td>Sem acabamento</td><td>Peça lavada, curada e sem suportes</td><td class="num">—</td><td>—</td></tr>
+          <tr><td>Pintura padrão</td><td>R$ 0,15 por cm² de superfície</td><td class="num">R$ 35</td><td>+1 dia útil</td></tr>
+          <tr><td>Texturizado</td><td>R$ 0,18 por cm² de superfície</td><td class="num">R$ 45</td><td>+1 dia útil</td></tr>
+          <tr><td>Pintura com aerógrafo</td><td>R$ 0,40 por cm² de superfície</td><td class="num">R$ 120</td><td>+2 a 3 dias úteis</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="router" aria-labelledby="h-cnc" style="background:var(--bg-alt)">
+  <div class="wrap split">
+    <div>
+      <p class="kicker">Corte CNC</p>
+      <h2 id="h-cnc" style="margin-top:12px">Corte de chapa sem pedido mínimo alto</h2>
+      <p class="lead" style="margin-top:14px">Letreiros, displays, gabaritos, peças de maquete e protótipos em chapa. Envie o DXF e receba o preço pelo comprimento de corte lido do desenho.</p>
+      <ul class="list">
+        <li>Área útil de 420 × 390 mm, até 80 mm de curso em Z.</li>
+        <li>Acrílico cristal de 1 a 10 mm, ACM 3 mm e MDF cru de 1 a 3 mm.</li>
+        <li>Combine com peças em resina no mesmo pedido.</li>
+      </ul>
+      <p style="margin-top:22px"><a class="btn btn-primary" href="#orcamento" id="goCnc">Calcular corte</a></p>
+    </div>
+    <div class="tblwrap">
+      <table class="tbl" style="margin-top:0">
+        <thead><tr><th>Material</th><th>Espessura</th><th>Chapa (R$/m²)</th><th>Velocidade</th></tr></thead>
+        <tbody>
+          <tr><td>Acrílico cristal</td><td class="num">2 / 3 / 5 mm</td><td class="num">242 / 285 / 602</td><td class="num">1,5 / 1,2 / 0,8 m/min</td></tr>
+          <tr><td>Acrílico cristal</td><td class="num">4 / 10 mm</td><td class="num">455 / 1.170</td><td class="num">1,0 / 0,4 m/min</td></tr>
+          <tr><td>ACM (preto, azul)</td><td class="num">3 mm</td><td class="num">180</td><td class="num">2,0 m/min</td></tr>
+          <tr><td>MDF cru</td><td class="num">2 / 3 mm</td><td class="num">33 / 36</td><td class="num">3,0 / 2,5 m/min</td></tr>
+        </tbody>
+      </table>
+      <p style="color:var(--muted);font-size:.85rem;margin-top:12px">Exemplo: placa de acrílico 3 mm de 30 × 20 cm com 4 minutos de corte custa <b class="num">R$ 74</b>.</p>
+    </div>
+  </div>
+</section>
+
+<section id="planos" aria-labelledby="h-planos">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker">Planos para quem imprime toda semana</p>
+      <h2 id="h-planos">Horas de impressão com desconto</h2>
+      <p class="lead">1 hora = 1 hora de impressora com a plataforma cheia, pós-processamento básico e até 15 cm³ de resina padrão. A hora avulsa equivale a cerca de R$ 26.</p>
+    </div>
+    <div class="plans">
+      <div class="plan"><h3>Protótipo</h3><p class="pp num">R$ 330<small> /mês</small></p><p class="num" style="color:var(--muted)">15 horas · R$ 22,00/h · 15% de desconto</p><ul><li>Fila padrão</li><li>Horas válidas no mês</li></ul></div>
+      <div class="plan feat"><h3>Engenharia</h3><p class="pp num">R$ 890<small> /mês</small></p><p class="num" style="color:var(--muted)">45 horas · R$ 19,78/h · 24% de desconto</p><ul><li>Prioridade: entrega em 48 h</li><li>10% de desconto em acabamento</li></ul></div>
+      <div class="plan"><h3>Empresa</h3><p class="pp num">R$ 2.190<small> /mês</small></p><p class="num" style="color:var(--muted)">120 horas · R$ 18,25/h · 30% de desconto</p><ul><li>Prioridade: entrega em 24 h</li><li>4 horas de corte CNC incluídas</li><li>15% de desconto em acabamento</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="h-who" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head"><p class="kicker">Para quem</p><h2 id="h-who">Quem já precisa de peça amanhã</h2></div>
+    <div class="who">
+      <div><h3>Engenharia de produto</h3><p>Protótipos de encaixe e carcaças sem esperar duas semanas pelo bureau.</p></div>
+      <div><h3>Startups e universidades</h3><p>Iteração semanal com plano de horas e preço previsível.</p></div>
+      <div><h3>Prótese, joias e miniaturas</h3><p>Detalhe fino de 50 µm e pintura com aerógrafo.</p></div>
+      <div><h3>Comunicação visual e arquitetura</h3><p>Cortes em acrílico, ACM e MDF e peças de maquete.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="faq" aria-labelledby="h-faq">
+  <div class="wrap">
+    <div class="sec-head"><p class="kicker">Dúvidas frequentes</p><h2 id="h-faq">Antes de enviar o arquivo</h2></div>
+    <div class="faq">
+      <details><summary>O prazo de 72 horas vale para qualquer peça?</summary><p>Vale para peças em resina sem acabamento e cortes CNC, contadas a partir da confirmação do pagamento. Pintura soma 1 dia útil e aerógrafo, 2 a 3 dias úteis. Lotes grandes têm o prazo informado no orçamento.</p></details>
+      <details><summary>Qual tolerância posso esperar?</summary><p>Em resina, a referência é ±0,1 mm a cada 50 mm para peças pequenas. Para encaixes, deixe folga de 0,2 a 0,3 mm. Se precisar de medida crítica, pedimos o relatório dimensional junto com a peça.</p></details>
+      <details><summary>Meu arquivo precisa estar pronto para impressão?</summary><p>Basta um STL fechado, em milímetros ou polegadas. A calculadora sugere a orientação de menor altura e você pode girar a peça; na produção, nós conferimos a orientação, criamos os suportes e avisamos se houver paredes finas demais (abaixo de 0,8 mm) ou furos que precisam de dreno.</p></details>
+      <details><summary>Vocês emitem nota fiscal?</summary><p>Sim, em todos os pedidos, para CPF ou CNPJ. Aceitamos Pix e cartão.</p></details>
+      <details><summary>Fazem peças em metal?</summary><p>Ainda não. Por enquanto trabalhamos com resina e corte CNC. Se precisar de metal, conte o projeto pelo formulário que avisamos quando estiver disponível.</p></details>
+      <details><summary>Meu projeto fica protegido?</summary><p>Os arquivos são usados só para orçar e produzir o seu pedido e podem ser apagados após a entrega. Assinamos acordo de confidencialidade quando necessário.</p></details>
+    </div>
+  </div>
+</section>
+
+<section id="contato" aria-labelledby="h-ct">
+  <div class="wrap contact">
+    <div>
+      <p class="kicker">Contato</p>
+      <h2 id="h-ct" style="margin-top:12px">Fale com quem vai fazer a sua peça</h2>
+      <p class="lead" style="margin-top:14px">Projetos especiais, lotes, materiais fora da lista ou dúvidas sobre o arquivo.</p>
+      <div class="cinfo">
+        <div><small>WhatsApp</small><b class="num">(00) 00000-0000</b></div>
+        <div><small>E-mail</small><b>contato@zirconiumlabs.com</b></div>
+        <div><small>Atendimento</small><b>Segunda a sexta, das 8h às 18h</b></div>
+      </div>
+    </div>
+    <form class="panel" id="cform" novalidate>
+      <div class="grid" style="margin-top:0">
+        <div class="f"><label for="cn">Nome</label><input id="cn" autocomplete="name" required></div>
+        <div class="f"><label for="ce">E-mail</label><input id="ce" type="email" autocomplete="email" required></div>
+        <div class="f"><label for="cc">Empresa (opcional)</label><input id="cc" autocomplete="organization"></div>
+        <div class="f"><label for="ct">Assunto</label><select id="ct"><option>Orçamento de impressão em resina</option><option>Orçamento de corte CNC</option><option>Plano de horas</option><option>Outro assunto</option></select></div>
+        <div class="f full"><label for="cm">Mensagem</label><textarea id="cm" placeholder="Conte o que precisa: material, quantidade, prazo."></textarea></div>
+      </div>
+      <p style="margin-top:16px"><button class="btn btn-primary" type="submit">Enviar mensagem</button></p>
+      <p class="formmsg" id="formmsg" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="#inicio" aria-label="Layer72, voltar ao início">
+      <svg viewBox="0 0 100 100" aria-hidden="true" style="width:26px;height:26px"><polygon points="50,92 96,79 50,66 4,79" fill="#5B3CC4"/><polygon points="50,68 96,55 50,42 4,55" fill="#8E7BE0"/><polygon points="50,44 96,31 50,18 4,31" fill="#F2A541"/></svg>
+      <b>layer<span>72</span></b>
+    </a>
+    <span>Layer72 Fabricação Digital · uma operação Zirconium</span>
+    <span>Da ideia à peça, camada por camada.</span>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function(){
+  const EMAIL = "contato@zirconiumlabs.com";
+  const $ = id => document.getElementById(id);
+  const brl = v => "R$ " + v.toLocaleString("pt-BR",{minimumFractionDigits:2, maximumFractionDigits:2});
+  const brl0 = v => "R$ " + Math.round(v).toLocaleString("pt-BR");
+  const f1 = v => v.toLocaleString("pt-BR",{minimumFractionDigits:1, maximumFractionDigits:1});
+  const intv = id => Math.max(1, Math.round(parseFloat($(id).value) || 1));
+
+  // ================= modelo de preço =================
+  const GROSS = 0.85, DENS = 1.10, SUP = 1.15, MRES = 1.20, LAB = 90;
+  const RES = {padrao:{n:"Padrão cinza",kg:152,col:0x9A9DA3,op:1}, tough:{n:"Tough (ABS-like)",kg:229,col:0x5F6470,op:1},
+               cristal:{n:"Cristal transparente",kg:229,col:0xBFD6EA,op:0.55}, flex:{n:"Flexível",kg:279,col:0x34323F,op:1}};
+  const MAQ = {One:{n:"Halot One",rate:10,plate:101.6,x:127,y:80,z:160}, Mage:{n:"Halot Mage",rate:15,plate:291.8,x:228,y:128,z:230}};
+  const FIN = {none:null, pint:{n:"Pintura padrão",r:0.15,min:35,d:1}, text:{n:"Texturizado",r:0.18,min:45,d:1}, aero:{n:"Aerógrafo",r:0.40,min:120,d:3}};
+  const CNC = {acr2:{n:"Acrílico cristal 2 mm",p:242,v:1.5,t:2,col:0xCFE3F2,op:.45}, acr3:{n:"Acrílico cristal 3 mm",p:285,v:1.2,t:3,col:0xCFE3F2,op:.45},
+    acr4:{n:"Acrílico cristal 4 mm",p:455,v:1.0,t:4,col:0xCFE3F2,op:.45}, acr5:{n:"Acrílico cristal 5 mm",p:602,v:0.8,t:5,col:0xCFE3F2,op:.45},
+    acr10:{n:"Acrílico cristal 10 mm",p:1170,v:0.4,t:10,col:0xCFE3F2,op:.45}, acm3:{n:"ACM 3 mm",p:180,v:2.0,t:3,col:0x2B2D35,op:1},
+    mdf2:{n:"MDF cru 2 mm",p:33,v:3.0,t:2,col:0xC49A6C,op:1}, mdf3:{n:"MDF cru 3 mm",p:36,v:2.5,t:3,col:0xC49A6C,op:1}};
+  const BED = {x:420, y:390};
+
+  // ================= estado =================
+  const st = {mode:"res", stl:null, dxf:null, stlFile:null, dxfFile:null, last:null, raw:{res:null, cnc:null}, unit:{res:"mm", cnc:"mm"}, rot:[], rotMode:"auto"};
+  const UF = {mm:1, in:25.4};
+  function scaleSTL(raw, k){ return k === 1 ? raw : stlStats(raw.T.map(v => v * k)); }
+  function scaleDXF(d, k){ if (k === 1) return d; return Object.assign({}, d, {segs:d.segs.map(s => s.map(v => v * k)), len:d.len*k, w:d.w*k, h:d.h*k, mn:[d.mn[0]*k, d.mn[1]*k]}); }
+  function applyUnits(){
+    if (st.raw.res){ const s = scaleSTL(st.raw.res, UF[st.unit.res]); st.stl = st.rot.length ? stlStats(rotateT(s.T, st.rot)) : s; }
+    if (st.raw.cnc) st.dxf = scaleDXF(st.raw.cnc, UF[st.unit.cnc]);
+  }
+  function showUnit(){ const u = st.unit[st.mode]; $("uMm").setAttribute("aria-pressed", u === "mm"); $("uIn").setAttribute("aria-pressed", u === "in"); }
+
+  // ================= STL =================
+  function parseSTL(buf){
+    const dv = new DataView(buf), P = [];
+    const isBin = buf.byteLength >= 84 && (84 + dv.getUint32(80, true) * 50 === buf.byteLength);
+    if (isBin){
+      const n = dv.getUint32(80, true);
+      for (let i = 0; i < n; i++){ const o = 84 + i*50 + 12; for (let j = 0; j < 9; j++) P.push(dv.getFloat32(o + j*4, true)); }
+    } else {
+      const txt = new TextDecoder().decode(buf);
+      const re = /vertex\s+([-+\d.eE]+)\s+([-+\d.eE]+)\s+([-+\d.eE]+)/g; let m;
+      while ((m = re.exec(txt))) P.push(+m[1], +m[2], +m[3]);
+      P.length -= P.length % 9;
+    }
+    if (!P.length) throw new Error("STL sem triângulos");
+    return stlStats(new Float32Array(P));
+  }
+  function stlStats(T){
+    let vol = 0, area = 0; const mn = [Infinity,Infinity,Infinity], mx = [-Infinity,-Infinity,-Infinity];
+    for (let i = 0; i < T.length; i += 9){
+      const ax=T[i],ay=T[i+1],az=T[i+2],bx=T[i+3],by=T[i+4],bz=T[i+5],cx=T[i+6],cy=T[i+7],cz=T[i+8];
+      vol += (ax*(by*cz-bz*cy) - ay*(bx*cz-bz*cx) + az*(bx*cy-by*cx)) / 6;
+      const ux=bx-ax,uy=by-ay,uz=bz-az,wx=cx-ax,wy=cy-ay,wz=cz-az;
+      const kx=uy*wz-uz*wy, ky=uz*wx-ux*wz, kz=ux*wy-uy*wx; area += Math.sqrt(kx*kx+ky*ky+kz*kz)/2;
+      for (let j = 0; j < 9; j++){ const k = j%3, v = T[i+j]; if (v < mn[k]) mn[k] = v; if (v > mx[k]) mx[k] = v; }
+    }
+    return {T, n:T.length/9, vol:Math.abs(vol)/1000, area:area/100, mn, ext:[mx[0]-mn[0], mx[1]-mn[1], mx[2]-mn[2]]};
+  }
+  function upAxis(){ return 2; } // a altura de impressão é sempre o Z da peça já orientada
+  // rotações de 90° (sentido anti-horário, regra da mão direita)
+  const ROT = {x:([x,y,z]) => [x, -z, y], y:([x,y,z]) => [z, y, -x], z:([x,y,z]) => [-y, x, z]};
+  function rotateT(T, ops){
+    if (!ops.length) return T;
+    const out = new Float32Array(T.length);
+    for (let i = 0; i < T.length; i += 3){ let v = [T[i], T[i+1], T[i+2]]; for (const o of ops) v = ROT[o](v); out[i] = v[0]; out[i+1] = v[1]; out[i+2] = v[2]; }
+    return out;
+  }
+  function autoOps(s){ const e = s.ext; return (e[0] <= e[1] && e[0] <= e[2]) ? ["y"] : (e[1] <= e[2] ? ["x"] : []); }
+  function simplify(ops){ // remove quatro giros seguidos no mesmo eixo
+    const o = ops.slice(); let i = 0;
+    while (i <= o.length - 4){ if (o[i] === o[i+1] && o[i] === o[i+2] && o[i] === o[i+3]){ o.splice(i, 4); i = Math.max(0, i - 3); } else i++; }
+    return o;
+  }
+  // permutação cíclica (mantém a peça sem espelhar): x' = c[u+2], y' (altura) = c[u], z' = c[u+1]
+  const perm = u => [(u+2)%3, u, (u+1)%3];
+
+  // ================= DXF =================
+  function parseDXF(text){
+    const L = text.split(/\r?\n/); const pairs = [];
+    for (let i = 0; i + 1 < L.length; i += 2) pairs.push([parseInt(L[i].trim(), 10), L[i+1].trim()]);
+    let unit = 0;
+    for (let i = 0; i < pairs.length; i++) if (pairs[i][1] === "$INSUNITS" && pairs[i+1] && pairs[i+1][0] === 70){ unit = parseInt(pairs[i+1][1], 10); break; }
+    const SC = {0:1, 1:25.4, 2:304.8, 4:1, 5:10, 6:1000}, UN = {0:"sem unidade (lido como mm)", 1:"polegadas", 2:"pés", 4:"milímetros", 5:"centímetros", 6:"metros"};
+    let sc = SC[unit] || 1, det = "mm";
+    if (unit === 1){ sc = 1; det = "in"; } else if (unit === 2){ sc = 12; det = "in"; }
+    // entidades da seção ENTITIES
+    let s = pairs.findIndex((p, i) => p[0] === 2 && p[1] === "ENTITIES" && pairs[i-1] && pairs[i-1][1] === "SECTION");
+    if (s < 0) throw new Error("DXF sem seção ENTITIES");
+    const ents = []; let cur = null;
+    for (let i = s + 1; i < pairs.length; i++){
+      const [c, v] = pairs[i];
+      if (c === 0){ if (v === "ENDSEC") break; cur = {type:v, g:[]}; ents.push(cur); }
+      else if (cur) cur.g.push([c, v]);
+    }
+    const segs = []; let count = 0, skipped = 0;
+    const add = (pts, closed) => { if (pts.length < 2) return; count++; for (let i = 0; i < pts.length - 1; i++) segs.push([pts[i][0], pts[i][1], pts[i+1][0], pts[i+1][1]]); if (closed) segs.push([pts[pts.length-1][0], pts[pts.length-1][1], pts[0][0], pts[0][1]]); };
+    const arcPts = (cx, cy, r, a0, a1) => { while (a1 <= a0) a1 += Math.PI*2; const n = Math.max(8, Math.ceil((a1-a0) / (Math.PI*2) * 96)); const out = []; for (let k = 0; k <= n; k++){ const a = a0 + (a1-a0)*k/n; out.push([cx + r*Math.cos(a), cy + r*Math.sin(a)]); } return out; };
+    const bulgePts = (p, q, b) => {
+      if (!b) return [p, q];
+      const dx = q[0]-p[0], dy = q[1]-p[1], ch = Math.hypot(dx, dy); if (ch === 0) return [p];
+      const hgt = (ch/2) * (1 - b*b) / (2*b), mx = (p[0]+q[0])/2, my = (p[1]+q[1])/2;
+      const cx = mx - dy/ch*hgt, cy = my + dx/ch*hgt, r = Math.hypot(p[0]-cx, p[1]-cy), th = 4*Math.atan(b);
+      const a0 = Math.atan2(p[1]-cy, p[0]-cx), n = Math.max(6, Math.ceil(Math.abs(th)/(Math.PI*2)*96)), out = [];
+      for (let k = 0; k <= n; k++){ const a = a0 + th*k/n; out.push([cx + r*Math.cos(a), cy + r*Math.sin(a)]); }
+      return out;
+    };
+    const polyWithBulge = (V, closed) => { const pts = []; const N = V.length; const lim = closed ? N : N - 1; for (let i = 0; i < lim; i++){ const p = V[i], q = V[(i+1)%N]; const seg = bulgePts([p.x, p.y], [q.x, q.y], p.b || 0); if (pts.length) seg.shift(); pts.push(...seg); } return pts; };
+    const get = (g, c) => { const f = g.find(x => x[0] === c); return f ? parseFloat(f[1]) : 0; };
+    for (let i = 0; i < ents.length; i++){
+      const e = ents[i], g = e.g;
+      if (e.type === "LINE") add([[get(g,10), get(g,20)], [get(g,11), get(g,21)]], false);
+      else if (e.type === "CIRCLE"){ const cx = get(g,10), cy = get(g,20), r = get(g,40); add(arcPts(cx, cy, r, 0, Math.PI*2), false); }
+      else if (e.type === "ARC"){ add(arcPts(get(g,10), get(g,20), get(g,40), get(g,50)*Math.PI/180, get(g,51)*Math.PI/180), false); }
+      else if (e.type === "LWPOLYLINE"){
+        const V = []; let closed = (parseInt((g.find(x => x[0] === 70) || [0, "0"])[1], 10) & 1) === 1;
+        for (const [c, v] of g){ if (c === 10) V.push({x:parseFloat(v), y:0, b:0}); else if (c === 20 && V.length) V[V.length-1].y = parseFloat(v); else if (c === 42 && V.length) V[V.length-1].b = parseFloat(v); }
+        add(polyWithBulge(V, closed), false);
+      }
+      else if (e.type === "POLYLINE"){
+        const closed = (parseInt((g.find(x => x[0] === 70) || [0, "0"])[1], 10) & 1) === 1; const V = [];
+        while (ents[i+1] && ents[i+1].type === "VERTEX"){ i++; const vg = ents[i].g; V.push({x:get(vg,10), y:get(vg,20), b:get(vg,42)}); }
+        add(polyWithBulge(V, closed), false);
+      }
+      else if (e.type === "SPLINE"){
+        const fit = [], ctl = []; let lastX = null;
+        for (const [c, v] of g){ if (c === 11) lastX = ["f", parseFloat(v)]; else if (c === 21 && lastX && lastX[0] === "f") fit.push([lastX[1], parseFloat(v)]); else if (c === 10) lastX = ["c", parseFloat(v)]; else if (c === 20 && lastX && lastX[0] === "c") ctl.push([lastX[1], parseFloat(v)]); }
+        add(fit.length >= 2 ? fit : ctl, false);
+      }
+      else if (e.type === "ELLIPSE"){
+        const cx = get(g,10), cy = get(g,20), mx = get(g,11), my = get(g,21), ra = get(g,40) || 1, t0 = get(g,41), t1raw = g.find(x => x[0] === 42) ? get(g,42) : Math.PI*2;
+        let t1 = t1raw; while (t1 <= t0) t1 += Math.PI*2; const R = Math.hypot(mx, my), ang = Math.atan2(my, mx), n = 96, pts = [];
+        for (let k = 0; k <= n; k++){ const t = t0 + (t1-t0)*k/n, x = R*Math.cos(t), y = R*ra*Math.sin(t); pts.push([cx + x*Math.cos(ang) - y*Math.sin(ang), cy + x*Math.sin(ang) + y*Math.cos(ang)]); }
+        add(pts, false);
+      }
+      else if (!["VERTEX","SEQEND","TEXT","MTEXT","DIMENSION","HATCH","INSERT","POINT","LEADER"].includes(e.type)) skipped++;
+    }
+    if (!segs.length) throw new Error("DXF sem linhas de corte");
+    let len = 0; const mn = [Infinity, Infinity], mx = [-Infinity, -Infinity];
+    for (const sg of segs){ for (let k = 0; k < 4; k++) sg[k] *= sc; len += Math.hypot(sg[2]-sg[0], sg[3]-sg[1]);
+      mn[0] = Math.min(mn[0], sg[0], sg[2]); mn[1] = Math.min(mn[1], sg[1], sg[3]); mx[0] = Math.max(mx[0], sg[0], sg[2]); mx[1] = Math.max(mx[1], sg[1], sg[3]); }
+    return {segs, len, count, w:mx[0]-mn[0], h:mx[1]-mn[1], mn, unit:UN[unit] || "não informada", det, hasUnit:unit > 0, skipped};
+  }
+
+  // ================= exemplos (o site abre com uma peça carregada) =================
+  function boxTris(x0,y0,z0,x1,y1,z1){
+    const v = [[x0,y0,z0],[x1,y0,z0],[x1,y1,z0],[x0,y1,z0],[x0,y0,z1],[x1,y0,z1],[x1,y1,z1],[x0,y1,z1]];
+    const f = [[0,2,1],[0,3,2],[4,5,6],[4,6,7],[0,1,5],[0,5,4],[1,2,6],[1,6,5],[2,3,7],[2,7,6],[3,0,4],[3,4,7]];
+    const out = []; for (const t of f) for (const k of t) out.push(...v[k]); return out;
+  }
+  function exampleSTL(){
+    const T = [...boxTris(0,0,0, 40,30,5), ...boxTris(0,0,5, 40,6,32), ...boxTris(17,6,5, 23,24,17)];
+    return stlStats(new Float32Array(T));
+  }
+  function exampleDXF(){
+    const L = ["0","SECTION","2","HEADER","9","$INSUNITS","70","4","0","ENDSEC","0","SECTION","2","ENTITIES"];
+    const lw = (pts, bul) => { L.push("0","LWPOLYLINE","90",String(pts.length),"70","1"); pts.forEach((p, i) => { L.push("10",String(p[0]),"20",String(p[1])); if (bul && bul[i]) L.push("42",String(bul[i])); }); };
+    const r = 12, b = Math.tan(Math.PI/8);
+    lw([[r,0],[300-r,0],[300,r],[300,200-r],[300-r,200],[r,200],[0,200-r],[0,r]], [0,b,0,b,0,b,0,b]);
+    for (const [x, y] of [[20,20],[280,20],[280,180],[20,180]]) L.push("0","CIRCLE","10",String(x),"20",String(y),"40","4");
+    lw([[60,90],[240,90],[240,110],[60,110]]);
+    L.push("0","ENDSEC","0","EOF");
+    return parseDXF(L.join("\n"));
+  }
+
+  // ================= visualizador 3D =================
+  const V = {ok:false};
+  function initViewer(){
+    if (V.ok) return true;
+    if (!window.THREE){ $("vfallback").hidden = false; return false; }
+    const el = $("viewer"), w = el.clientWidth, h = el.clientHeight;
+    V.renderer = new THREE.WebGLRenderer({antialias:true, alpha:false});
+    V.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); V.renderer.setSize(w, h);
+    V.renderer.setClearColor(0x1C1B29); el.prepend(V.renderer.domElement);
+    V.scene = new THREE.Scene();
+    V.camera = new THREE.PerspectiveCamera(38, w/h, 0.5, 20000);
+    V.scene.add(new THREE.HemisphereLight(0xEDE9FF, 0x2A2840, 0.85));
+    const d1 = new THREE.DirectionalLight(0xFFFFFF, 0.75); d1.position.set(1, 2, 1.4); V.scene.add(d1);
+    const d2 = new THREE.DirectionalLight(0x8E7BE0, 0.35); d2.position.set(-1.5, 0.6, -1); V.scene.add(d2);
+    V.group = new THREE.Group(); V.scene.add(V.group);
+    if (THREE.OrbitControls){ V.controls = new THREE.OrbitControls(V.camera, V.renderer.domElement); V.controls.enableDamping = true; V.controls.autoRotate = true; V.controls.autoRotateSpeed = 1.4; }
+    new ResizeObserver(() => { const W = el.clientWidth, H = el.clientHeight; V.renderer.setSize(W, H); V.camera.aspect = W/H; V.camera.updateProjectionMatrix(); }).observe(el);
+    const tick = () => { if (V.controls) V.controls.update(); V.renderer.render(V.scene, V.camera); requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+    V.ok = true; return true;
+  }
+  function clearGroup(){ while (V.group.children.length){ const o = V.group.children.pop(); o.geometry && o.geometry.dispose(); o.material && o.material.dispose && o.material.dispose(); } }
+  function bed(wx, wz, label){
+    const g = new THREE.PlaneGeometry(wx, wz); g.rotateX(-Math.PI/2);
+    const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({color:0x2A2840})); m.position.y = -0.2; V.group.add(m);
+    const grid = new THREE.GridHelper(Math.max(wx, wz), Math.round(Math.max(wx, wz)/10), 0x4A4570, 0x34314F);
+    grid.scale.set(wx/Math.max(wx,wz), 1, wz/Math.max(wx,wz)); grid.position.y = -0.1; V.group.add(grid);
+    const edge = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(wx, 0.01, wz)), new THREE.LineBasicMaterial({color:0x8E7BE0})); V.group.add(edge);
+  }
+  function frameView(size){
+    const r = Math.max(size.x, size.y, size.z) * 1.15 + 10;
+    V.camera.position.set(r*1.05, r*0.85, r*1.25); V.camera.near = r/200; V.camera.far = r*50; V.camera.updateProjectionMatrix();
+    if (V.controls){ V.controls.target.set(0, size.y*0.35, 0); V.controls.update(); } else V.camera.lookAt(0, size.y*0.35, 0);
+  }
+  function showSTL(s, mk){
+    if (!initViewer()) return;
+    clearGroup();
+    const u = upAxis(s), p = perm(u), T = s.T, pos = new Float32Array(T.length);
+    const ex = [s.ext[p[0]], s.ext[p[1]], s.ext[p[2]]];
+    for (let i = 0; i < T.length; i += 3){
+      pos[i]   = T[i + p[0]] - s.mn[p[0]] - ex[0]/2;
+      pos[i+1] = T[i + p[1]] - s.mn[p[1]];
+      pos[i+2] = T[i + p[2]] - s.mn[p[2]] - ex[2]/2;
+    }
+    const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.BufferAttribute(pos, 3)); g.computeVertexNormals();
+    const r = RES[$("resin").value];
+    const mat = new THREE.MeshStandardMaterial({color:r.col, roughness:0.55, metalness:0.05, transparent:r.op < 1, opacity:r.op, side:THREE.DoubleSide});
+    V.group.add(new THREE.Mesh(g, mat));
+    const m = MAQ[mk]; bed(m.x, m.y);
+    frameView({x:Math.max(ex[0], m.x*0.6), y:ex[1], z:Math.max(ex[2], m.y*0.6)});
+  }
+  function showDXF(d){
+    if (!initViewer()) return;
+    clearGroup();
+    const c = CNC[$("cmat").value], t = c.t;
+    const sheet = new THREE.Mesh(new THREE.BoxGeometry(d.w + 10, t, d.h + 10), new THREE.MeshStandardMaterial({color:c.col, roughness:0.35, transparent:c.op < 1, opacity:c.op}));
+    sheet.position.y = t/2; V.group.add(sheet);
+    const pts = new Float32Array(d.segs.length * 6);
+    d.segs.forEach((s, i) => { const o = i*6; pts[o] = s[0]-d.mn[0]-d.w/2; pts[o+1] = t + 0.15; pts[o+2] = -(s[1]-d.mn[1]-d.h/2); pts[o+3] = s[2]-d.mn[0]-d.w/2; pts[o+4] = t + 0.15; pts[o+5] = -(s[3]-d.mn[1]-d.h/2); });
+    const lg = new THREE.BufferGeometry(); lg.setAttribute("position", new THREE.BufferAttribute(pts, 3));
+    V.group.add(new THREE.LineSegments(lg, new THREE.LineBasicMaterial({color:0xF2A541})));
+    bed(BED.x, BED.y);
+    frameView({x:Math.max(d.w, BED.x*0.7), y:t*4, z:Math.max(d.h, BED.y*0.7)});
+  }
+  $("vRotate").addEventListener("click", e => { if (!V.controls) return; V.controls.autoRotate = !V.controls.autoRotate; e.currentTarget.setAttribute("aria-pressed", V.controls.autoRotate); });
+  $("vReset").addEventListener("click", () => refresh(true));
+
+  // ================= cálculo =================
+  function quoteRes(){
+    const s = st.stl, u = upAxis(s), p = perm(u), ex = [s.ext[p[0]], s.ext[p[1]], s.ext[p[2]]];
+    const z = ex[1], a = Math.max(ex[0], ex[2]), b = Math.min(ex[0], ex[2]), foot = a*b/100, q = intv("qty");
+    if (z > 230 || a > 228 || b > 128) return {err:"A peça passa do volume máximo (228 × 128 × 230 mm). Divida o modelo ou fale com a gente.", mk:"Mage"};
+    const mk = (z > 160 || a > 127 || b > 80) ? "Mage" : "One", m = MAQ[mk];
+    const r = RES[$("resin").value], f = FIN[$("fin").value];
+    const mat = s.vol * q * r.kg / 1000 * DENS * SUP * MRES;
+    const hours = z / 20, runs = Math.max(1, Math.ceil(foot * q / m.plate));
+    const occ = Math.min(Math.max(foot * q / (m.plate * runs), 0.25), 1);
+    const maq = hours * m.rate * occ * runs, lab = (0.25 + 0.08*q) * LAB, cons = 4;
+    const fp = f ? Math.max(s.area * f.r, f.min) * q : 0;
+    const price = Math.max((mat + maq + lab + cons + fp) / GROSS, 49);
+    const days = 3 + (f ? f.d : 0) + (runs > 2 ? Math.ceil((runs - 2)/3) : 0);
+    const eta = days === 3 ? "72 h" : days + " dias úteis";
+    const dims = `${f1(a)} × ${f1(b)} × ${f1(z)} mm`;
+    return {price, q, mk, eta, dims, rows:[["Resina", r.n], ["Impressora", m.n + (runs > 1 ? " · " + runs + " ciclos" : "")],
+      ["Tempo de impressão", f1(hours*runs) + " h"], ["Material", brl(mat/GROSS)], ["Acabamento", f ? f.n + " · " + brl(fp/GROSS) : "Sem acabamento"]],
+      foot, summary:{Servico:"Impressão 3D em resina", Arquivo:st.stlFile ? st.stlFile.name : "Exemplo do site", Unidade_do_arquivo:st.unit.res === "in" ? "polegada" : "mm", Volume:f1(s.vol)+" cm³", Dimensoes:dims,
+        Area_superficial:Math.round(s.area)+" cm²", Orientacao:orientText(z), Resina:r.n, Acabamento:f ? f.n : "Sem acabamento", Quantidade:String(q), Impressora:m.n, Preco_estimado:brl(price), Prazo:eta}};
+  }
+  function quoteCnc(){
+    const d = st.dxf, c = CNC[$("cmat").value], q = intv("cqty");
+    const fits = (d.w <= BED.x && d.h <= BED.y) || (d.w <= BED.y && d.h <= BED.x);
+    if (!fits) return {err:"O desenho passa da área de corte (420 × 390 mm). Divida o desenho ou fale com a gente."};
+    const lenm = d.len/1000, min = lenm / c.v * q, area = d.w*d.h/1e6 * q, matv = area * 1.15 * c.p;
+    const price = Math.max((35 + min*2 + matv) / GROSS, 59), eta = q > 20 ? "4 dias úteis" : "72 h";
+    const dims = `${f1(d.w)} × ${f1(d.h)} mm`;
+    return {price, q, eta, dims, rows:[["Material", c.n], ["Comprimento de corte", f1(lenm*q) + " m"], ["Tempo de corte", f1(min) + " min"],
+      ["Chapa usada", (area*1.15).toLocaleString("pt-BR",{maximumFractionDigits:3}) + " m² (com perda)"], ["Material", brl(matv/GROSS)]],
+      summary:{Servico:"Corte CNC", Arquivo:st.dxfFile ? st.dxfFile.name : "Exemplo do site", Unidade_do_arquivo:st.unit.cnc === "in" ? "polegada" : "mm", Dimensoes:dims, Comprimento_de_corte:f1(lenm)+" m por peça",
+        Contornos:String(d.count), Material:c.n, Quantidade:String(q), Preco_estimado:brl(price), Prazo:eta}};
+  }
+  function orientText(z){
+    const n = st.rot.length, label = st.rotMode === "auto" ? "automática (menor altura)" : st.rotMode === "orig" ? "original do arquivo" : "personalizada";
+    return label + " · altura Z " + f1(z) + " mm";
+  }
+  function refresh(reframe){ refreshCore(reframe); renderFrete(); }
+  function refreshCore(reframe){
+    const isRes = st.mode === "res";
+    const r = isRes ? quoteRes() : quoteCnc();
+    if (isRes){ const s = st.stl;
+      $("fVol").textContent = f1(s.vol) + " cm³"; $("fSurf").textContent = Math.round(s.area).toLocaleString("pt-BR") + " cm²";
+      $("fDims").textContent = r.dims || "—"; $("fFoot").textContent = r.foot ? f1(r.foot) + " cm²" : "—";
+      $("orientInfo").textContent = "Orientação " + orientText(s.ext[2]) + ". Quanto menor a altura, menor o tempo de impressão.";
+      document.querySelectorAll(".orient button").forEach(b => b.classList.toggle("on", b.dataset.r === st.rotMode));
+    } else { const d = st.dxf;
+      $("cDims").textContent = f1(d.w) + " × " + f1(d.h) + " mm"; $("cLen").textContent = f1(d.len/1000) + " m";
+      $("cCount").textContent = d.count; $("cUnit").textContent = st.raw.cnc.hasUnit ? "no arquivo: " + st.raw.cnc.unit : "não informada no arquivo";
+    }
+    $("vbadge").textContent = (isRes ? st.stlFile : st.dxfFile) ? (isRes ? st.stlFile.name : st.dxfFile.name) : "Exemplo";
+    $("vdims").textContent = r.dims || "";
+    if (reframe !== false){ if (isRes) showSTL(st.stl, r.mk || "One"); else showDXF(st.dxf); }
+    $("qlabel").textContent = isRes ? "Preço estimado · resina 3D" : "Preço estimado · corte CNC";
+    if (r.err){ $("qeta").textContent = "—"; $("qprice").textContent = "—"; $("qper").textContent = r.err; $("qrows").innerHTML = ""; st.last = null; return; }
+    st.last = r;
+    $("qlabel").textContent = isRes ? "Preço estimado · resina 3D" : "Preço estimado · corte CNC";
+    $("qprice").textContent = brl0(r.price);
+    $("qper").textContent = r.q > 1 ? brl(r.price / r.q) + " por peça · " + r.q + " peças" : "1 peça";
+    $("qeta").textContent = r.eta;
+    $("qrows").innerHTML = r.rows.map(([a, b]) => `<div><span>${a}</span><b>${b}</b></div>`).join("");
+  }
+  ["resin","fin","qty","cmat","cqty"].forEach(id => $(id).addEventListener("input", () => refresh(!["qty","cqty","fin"].includes(id))));
+
+
+  // ================= frete (Correios: SEDEX e SEDEX 10) =================
+  // Origem do envio: ajuste aqui o CEP da unidade que posta as encomendas.
+  const ORIGEM = {cep:"01310-100", cidade:"São Paulo/SP"};
+  // Tabela Correios contrato (pacote Clube/Platinum, vigência 12/04/2025) + reajuste de 4,2643% de 12/04/2026.
+  // Faixas: até 0,3 / 0,5 / 1 / 2 / 3 / 4 / 5 / 6 / 7 / 8 / 9 / 10 kg; último valor = kg adicional.
+  const REAJ = 1.042643, KG = [0.3,0.5,1,2,3,4,5,6,7,8,9,10];
+  const TAB = {
+    sedex:{
+      L:[9.74,10.92,11.68,14.68,16.38,17.70,19.13,20.31,21.60,22.83,23.58,24.10,2.99],
+      E:[18.62,19.30,21.27,23.46,25.63,28.22,30.42,32.88,35.19,37.66,40.09,42.80,5.31],
+      N1:[27.67,28.83,29.99,36.15,42.21,48.39,53.41,58.56,64.61,70.77,76.96,83.14,10.31],
+      N2:[38.74,40.36,41.98,50.64,56.99,65.34,72.11,79.05,87.23,95.56,103.89,112.24,13.92],
+      N3:[49.81,51.88,53.99,65.10,80.21,91.95,101.49,111.27,122.76,134.50,146.22,157.97,19.59],
+      N4:[58.11,60.52,62.99,75.93,97.08,111.31,122.84,134.68,148.62,162.82,177.00,191.23,23.71],
+      P1:[36.84,37.81,38.78,48.50,58.13,63.32,76.57,80.92,86.00,95.71,100.89,106.10,13.16],
+      P2:[47.03,48.39,49.77,61.56,71.44,78.45,93.18,99.02,105.90,117.43,124.44,131.43,16.29],
+      P3:[56.78,58.54,60.30,74.17,91.38,101.27,118.32,126.54,136.20,150.60,160.45,170.30,21.12],
+      P4:[65.12,67.18,69.21,84.64,106.93,118.88,137.62,147.57,159.28,175.74,187.65,199.60,24.75],
+      I1:[43.86,45.00,46.18,57.74,69.19,75.37,91.17,96.31,102.39,113.93,120.11,126.30,15.66],
+      I2:[56.00,57.61,59.25,73.29,85.04,93.39,110.93,117.89,126.07,139.79,148.14,156.46,19.40],
+      I3:[67.61,69.69,71.79,88.29,108.79,120.56,140.85,150.63,162.13,179.28,191.01,202.74,25.14],
+      I4:[77.54,79.96,82.39,100.75,127.30,141.53,163.84,175.69,189.61,209.22,223.40,237.60,29.45]},
+    sedex10:{
+      L:[28.81,29.84,30.86,34.14,37.63,40.91,44.19,47.27,50.96,54.03,58.86,63.57,6.46],
+      E:[31.60,33.43,35.27,38.84,42.70,46.89,50.56,54.63,58.08,62.17,66.99,71.69,7.22],
+      N1:[45.60,48.70,51.79,62.04,72.94,83.30,94.19,104.67,115.13,125.60,136.92,148.02,14.64],
+      N2:[70.82,74.44,78.07,93.99,109.79,125.49,141.19,157.32,173.13,188.61,207.51,226.09,22.44],
+      N3:[86.14,90.59,95.06,114.65,133.98,153.48,172.81,192.51,211.89,231.23,252.80,274.32,27.18],
+      N4:[101.46,106.74,112.03,135.32,158.17,181.46,204.42,227.70,250.66,273.84,298.08,322.53,31.94],
+      P1:[58.66,60.74,62.80,75.63,88.73,101.91,114.83,127.67,140.39,153.13,168.12,183.10,18.31],
+      P2:[78.13,79.58,81.01,102.00,122.46,142.92,163.45,184.17,204.45,225.98,251.11,275.32,27.45],
+      P3:[90.57,92.25,93.94,119.33,144.53,169.64,194.68,220.02,244.95,270.61,299.10,327.05,32.47],
+      P4:[103.00,104.91,106.85,136.64,166.60,196.39,225.89,255.86,285.46,315.25,347.10,378.77,37.51],
+      I1:[69.85,72.30,74.75,90.03,105.63,121.33,136.70,151.98,167.15,182.31,200.15,217.98,21.79],
+      I2:[93.02,94.73,96.44,121.43,145.78,170.14,194.59,219.25,243.39,269.03,298.94,327.76,32.69],
+      I3:[107.81,109.83,111.83,142.05,172.05,201.95,231.76,261.93,291.62,322.16,356.07,389.34,38.67],
+      I4:[122.61,124.90,127.19,162.66,198.34,233.78,268.92,304.60,339.84,375.29,413.21,450.91,44.65]}
+  };
+  // faixas de CEP por estado e das capitais (aproximação para escolher a zona tarifária)
+  const UFR = [["SP",1000,19999],["RJ",20000,28999],["ES",29000,29999],["MG",30000,39999],["BA",40000,48999],["SE",49000,49999],["PE",50000,56999],["AL",57000,57999],
+    ["PB",58000,58999],["RN",59000,59999],["CE",60000,63999],["PI",64000,64999],["MA",65000,65999],["PA",66000,68899],["AP",68900,68999],["AM",69000,69299],["RR",69300,69399],
+    ["AM",69400,69899],["AC",69900,69999],["DF",70000,72799],["GO",72800,72999],["DF",73000,73699],["GO",73700,76799],["RO",76800,76999],["TO",77000,77999],["MT",78000,78899],
+    ["MS",79000,79999],["PR",80000,87999],["SC",88000,89999],["RS",90000,99999]];
+  const CAP = [[1000,5999],[8000,8499],[20000,23799],[29000,29099],[30000,31999],[40000,42599],[49000,49099],[50000,52999],[57000,57099],[58000,58099],[59000,59139],[60000,61599],
+    [64000,64099],[65000,65109],[66000,66999],[68900,68914],[69000,69099],[69300,69339],[69900,69924],[70000,72799],[74000,74899],[76800,76834],[77000,77270],[78000,78109],
+    [79000,79124],[80000,82999],[88000,88099],[90000,91999]];
+  const CAPXY = {AC:[-9.97,-67.81],AL:[-9.65,-35.73],AP:[0.03,-51.07],AM:[-3.12,-60.02],BA:[-12.97,-38.51],CE:[-3.72,-38.54],DF:[-15.79,-47.88],ES:[-20.32,-40.34],GO:[-16.68,-49.25],
+    MA:[-2.53,-44.30],MT:[-15.60,-56.10],MS:[-20.47,-54.62],MG:[-19.92,-43.94],PA:[-1.46,-48.50],PB:[-7.12,-34.86],PR:[-25.43,-49.27],PE:[-8.05,-34.88],PI:[-5.09,-42.80],
+    RJ:[-22.91,-43.17],RN:[-5.79,-35.21],RS:[-30.03,-51.23],RO:[-8.76,-63.90],RR:[2.82,-60.67],SC:[-27.60,-48.55],SP:[-23.55,-46.63],SE:[-10.91,-37.07],TO:[-10.18,-48.33]};
+  const cep5 = c => parseInt(String(c).replace(/\D/g, "").slice(0, 5), 10);
+  const ufOf = c => { const n = cep5(c); const r = UFR.find(([, a, b]) => n >= a && n <= b); return r ? r[0] : null; };
+  const isCap = c => { const n = cep5(c); return CAP.some(([a, b]) => n >= a && n <= b); };
+  const capRange = c => { const n = cep5(c); return CAP.findIndex(([a, b]) => n >= a && n <= b); };
+  function km(a, b){ const [la1, lo1] = CAPXY[a], [la2, lo2] = CAPXY[b], R = 6371, r = Math.PI/180;
+    const h = Math.sin((la2-la1)*r/2)**2 + Math.cos(la1*r)*Math.cos(la2*r)*Math.sin((lo2-lo1)*r/2)**2; return 2*R*Math.asin(Math.sqrt(h)); }
+  function zona(dest){
+    const uo = ufOf(ORIGEM.cep), ud = ufOf(dest); if (!ud) return null;
+    const co = isCap(ORIGEM.cep), cd = isCap(dest);
+    if (cep5(dest) === cep5(ORIGEM.cep) || (co && cd && capRange(dest) === capRange(ORIGEM.cep))) return {z:"L", txt:"local", uf:ud, cap:cd, d:0};
+    if (uo === ud) return {z:"E", txt:"estadual", uf:ud, cap:cd, d:0};
+    const d = km(uo, ud), band = d <= 700 ? 1 : d <= 1500 ? 2 : d <= 2500 ? 3 : 4;
+    const pre = (co && cd) ? "N" : (co || cd) ? "P" : "I";
+    return {z:pre + band, txt:"interestadual", uf:ud, cap:cd, d};
+  }
+  function tarifa(serv, z, kg){
+    const t = TAB[serv][z]; if (!t) return null;
+    let v; const i = KG.findIndex(k => kg <= k + 1e-9);
+    if (i >= 0) v = t[i]; else v = t[11] + Math.ceil(kg - 10) * t[12];
+    return v * REAJ;
+  }
+  const PRAZO_SEDEX = {L:1, E:1, N1:1, N2:2, N3:3, N4:4, P1:2, P2:3, P3:4, P4:5, I1:3, I2:4, I3:5, I4:6};
+  // pacote: dimensões em cm, peso real e cúbico (Correios: cúbico = C×L×A/6000, considerado acima de 5 kg)
+  function pacote(){
+    let dims, massa;
+    if (st.mode === "res"){
+      const s = st.stl, q = intv("qty"), e = s.ext.slice().sort((a, b) => b - a);
+      massa = s.vol * q * 1.10 / 1000;
+      dims = [e[0]/10 + 4, e[1]/10 + 4, Math.min(q, 6) * e[2]/10 * 1.1 + 4];
+      if (q > 6) dims[1] = dims[1] * Math.ceil(q / 6);
+    } else {
+      const d = st.dxf, c = CNC[$("cmat").value], q = intv("cqty"), dens = {acr:1.19, acm:1.5, mdf:0.75}[$("cmat").value.slice(0, 3)];
+      massa = d.w * d.h * c.t / 1000 * dens / 1000 * q;
+      dims = [Math.max(d.w, d.h)/10 + 4, Math.min(d.w, d.h)/10 + 4, c.t * q / 10 + 4];
+    }
+    dims = dims.map(v => Math.max(v, 2)).sort((a, b) => b - a);
+    dims[0] = Math.max(dims[0], 16); dims[1] = Math.max(dims[1], 11);
+    const real = massa * 1.1 + 0.2, cub = dims[0] * dims[1] * dims[2] / 6000;
+    const peso = cub > 5 ? Math.max(real, cub) : real;
+    const fora = dims[0] > 100 || dims[0] + dims[1] + dims[2] > 200 || peso > 30;
+    return {dims, real, cub, peso, fora};
+  }
+  function frete(){
+    const cep = $("cep").value.replace(/\D/g, "");
+    if (cep.length !== 8) return {state:"vazio"};
+    const z = zona(cep); if (!z) return {state:"erro", msg:"CEP não reconhecido. Confira os 8 dígitos."};
+    const pk = pacote();
+    if (pk.fora) return {state:"erro", msg:"O pacote passa dos limites dos Correios (100 cm de lado, 200 cm na soma ou 30 kg). Frete sob consulta."};
+    const opts = [{id:"retirada", n:"Retirada no local", v:0, prazo:"no dia em que ficar pronto"}];
+    const ps = tarifa("sedex", z.z, pk.peso), d1 = PRAZO_SEDEX[z.z];
+    opts.push({id:"sedex", n:"SEDEX", v:ps, prazo:(d1 === 1 ? "1 dia útil" : d1 + " dias úteis") + " após a postagem", dias:d1});
+    const s10ok = pk.peso <= 10 && (z.z === "L" || z.z === "E" ? true : z.cap);
+    if (s10ok) opts.push({id:"sedex10", n:"SEDEX 10", v:tarifa("sedex10", z.z, pk.peso), prazo:"até 10h do dia útil seguinte à postagem", dias:1});
+    else opts.push({id:"sedex10", n:"SEDEX 10", v:null, prazo:pk.peso > 10 ? "indisponível acima de 10 kg" : "indisponível para este CEP (atende capitais e cidades selecionadas)"});
+    return {state:"ok", z, pk, opts};
+  }
+  let freteSel = "sedex10";
+  function renderFrete(){
+    const out = $("freteOpts"), f = frete(), box = $("freteInfo");
+    st.frete = null;
+    if (f.state === "vazio"){ out.innerHTML = ""; box.textContent = "Informe o CEP de entrega para ver SEDEX e SEDEX 10."; renderTotal(); return; }
+    if (f.state === "erro"){ out.innerHTML = ""; box.textContent = f.msg; renderTotal(); return; }
+    const avail = f.opts.filter(o => o.v !== null);
+    if (!avail.some(o => o.id === freteSel)) freteSel = avail.find(o => o.id === "sedex") ? "sedex" : "retirada";
+    out.innerHTML = f.opts.map(o => `<label class="fopt${o.v === null ? " off" : ""}"><input type="radio" name="frete" value="${o.id}"${o.id === freteSel ? " checked" : ""}${o.v === null ? " disabled" : ""}>
+      <span class="fn">${o.n}<small>${o.prazo}</small></span><b class="num">${o.v === null ? "—" : o.v === 0 ? "grátis" : brl(o.v)}</b></label>`).join("");
+    out.querySelectorAll("input").forEach(i => i.addEventListener("change", () => { freteSel = i.value; renderTotal(); }));
+    const pk = f.pk;
+    box.textContent = `${f.z.uf} · zona ${f.z.txt}${f.z.cap ? " (capital)" : ""} · pacote ${pk.dims.map(v => Math.round(v)).join(" × ")} cm · ${pk.peso.toLocaleString("pt-BR", {maximumFractionDigits:2})} kg`;
+    st.frete = f; renderTotal();
+  }
+  function renderTotal(){
+    const t = $("qtotal");
+    if (!st.last || !st.frete){ t.hidden = true; return; }
+    const o = st.frete.opts.find(x => x.id === freteSel); if (!o || o.v === null){ t.hidden = true; return; }
+    t.hidden = false;
+    $("qtotalv").textContent = brl(st.last.price + o.v);
+    let eta = st.last.eta;
+    if (o.dias){ const prodDias = /h$/.test(eta) ? 3 : parseInt(eta, 10); eta = (prodDias + o.dias) + " dias úteis"; }
+    $("qtotaleta").textContent = o.id === "retirada" ? "Retirada: " + st.last.eta : "Entrega estimada: " + eta + " (produção + " + o.n + ")";
+  }
+  function freteResumo(){
+    if (!st.frete) return {Entrega:"CEP não informado"};
+    const o = st.frete.opts.find(x => x.id === freteSel);
+    return {CEP_de_entrega:$("cep").value, Entrega:o ? o.n + (o.v ? " · " + brl(o.v) : "") + " · " + o.prazo : "—",
+      Pacote:st.frete.pk.dims.map(v => Math.round(v)).join(" × ") + " cm · " + st.frete.pk.peso.toLocaleString("pt-BR", {maximumFractionDigits:2}) + " kg",
+      Total_com_frete:o && o.v !== null ? brl(st.last.price + o.v) : "—"};
+  }
+  $("cep").addEventListener("input", e => { let v = e.target.value.replace(/\D/g, "").slice(0, 8); if (v.length > 5) v = v.slice(0, 5) + "-" + v.slice(5); e.target.value = v; renderFrete(); });
+
+  // ================= abas e arquivo =================
+  const tabs = {res:$("tab-res"), cnc:$("tab-cnc")};
+  function setMode(m){
+    st.mode = m; showUnit();
+    tabs.res.setAttribute("aria-selected", m === "res"); tabs.cnc.setAttribute("aria-selected", m === "cnc");
+    $("pane-res").hidden = m !== "res"; $("pane-cnc").hidden = m !== "cnc";
+    $("file").accept = m === "res" ? ".stl" : ".dxf";
+    $("dropTitle").textContent = m === "res" ? "Arraste o STL aqui ou clique para escolher" : "Arraste o DXF aqui ou clique para escolher";
+    $("dropHint").textContent = m === "res" ? "Binário ou ASCII, em mm ou polegadas" : "Linhas, arcos, círculos, polilinhas e splines; textos e cotas são ignorados";
+    $("sendBtn").textContent = "Enviar orçamento com o arquivo";
+    const f = m === "res" ? st.stlFile : st.dxfFile;
+    $("filemeta").className = "filemeta"; $("filemeta").textContent = f ? "Arquivo: " + f.name : "Mostrando um exemplo. Envie o seu arquivo para calcular.";
+    refresh(true);
+  }
+  tabs.res.addEventListener("click", () => setMode("res"));
+  tabs.cnc.addEventListener("click", () => setMode("cnc"));
+  const go = $("goCnc"); if (go) go.addEventListener("click", () => setMode("cnc"));
+
+  function handle(file){
+    if (!file) return;
+    const ext = file.name.split(".").pop().toLowerCase(), meta = $("filemeta");
+    if (!["stl","dxf"].includes(ext)){ meta.className = "filemeta err"; meta.textContent = "Envie um arquivo .stl (resina) ou .dxf (corte CNC)."; return; }
+    meta.className = "filemeta"; meta.textContent = "Lendo " + file.name + "…";
+    const p = ext === "stl" ? file.arrayBuffer().then(b => { st.raw.res = parseSTL(b); st.stlFile = file; st.rot = autoOps(st.raw.res); st.rotMode = "auto"; applyUnits(); return "res"; })
+                            : file.text().then(t => { st.raw.cnc = parseDXF(t); st.dxfFile = file; st.unit.cnc = st.raw.cnc.det; applyUnits(); return "cnc"; });
+    p.then(m => {
+      setMode(m);
+      if (m === "res"){ const big = Math.max(...st.raw.res.ext);
+        meta.textContent = `${file.name}: ${st.stl.n.toLocaleString("pt-BR")} triângulos lidos` + (st.unit.res === "mm" && big < 12 ? " · a peça ficou muito pequena: se o arquivo estiver em polegadas, troque a unidade" : (st.unit.res === "in" && big > 30 ? " · a peça ficou muito grande: confira se o arquivo não está em mm" : "")); }
+      else meta.textContent = `${file.name}: ${st.dxf.count} contornos lidos` + (st.dxf.skipped ? ` · ${st.dxf.skipped} elementos ignorados` : "");
+    }).catch(err => { meta.className = "filemeta err"; meta.textContent = ext === "stl" ? "Não consegui ler esse STL. Exporte em STL binário ou ASCII e tente de novo." : "Não consegui ler esse DXF (" + err.message + "). Salve como DXF ASCII R12 ou 2000 e tente de novo."; });
+  }
+  $("file").addEventListener("change", e => { handle(e.target.files[0]); e.target.value = ""; });
+  const drop = $("drop");
+  ["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+  ["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+  drop.addEventListener("drop", e => handle(e.dataTransfer.files[0]));
+
+  // ================= envio por e-mail =================
+  // Envio pelo FormSubmit (formsubmit.co) para EMAIL, com o arquivo anexado. Se o envio falhar
+  // (por exemplo, na pré-visualização), abre o e-mail do visitante já preenchido.
+  function mailtoLink(subject, body){ return "mailto:" + EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body); }
+  async function sendMail(fields, file, out, btn){
+    const subject = fields._subject;
+    const body = Object.entries(fields).filter(([k]) => !k.startsWith("_")).map(([k, v]) => k.replace(/_/g, " ") + ": " + v).join("\n");
+    const base = out.id === "formmsg" ? "formmsg" : "sendmsg"; btn.disabled = true; const old = btn.textContent; btn.textContent = "Enviando…"; out.className = base;
+    try {
+      const fd = new FormData(); Object.entries(fields).forEach(([k, v]) => fd.append(k, v));
+      fd.append("_template", "table"); fd.append("_captcha", "false");
+      if (file) fd.append("attachment", file, file.name);
+      const res = await fetch("https://formsubmit.co/ajax/" + EMAIL, {method:"POST", body:fd, headers:{"Accept":"application/json"}});
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok || String(j.success) !== "true") throw new Error(j.message || "falha no envio");
+      out.textContent = "Orçamento enviado. Respondemos no seu e-mail em até 1 dia útil.";
+    } catch(e){
+      out.className = base + " warn";
+      out.innerHTML = `Não foi possível enviar daqui. <a href="${mailtoLink(subject, body + (file ? "\n\n(anexe o arquivo " + file.name + ")" : ""))}">Abra o e-mail com o orçamento preenchido</a> ou escreva para <b>${EMAIL}</b>` + (file ? " anexando o arquivo." : ".");
+    } finally { btn.disabled = false; btn.textContent = old; }
+  }
+  $("sendForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const out = $("sendmsg"), n = $("sn").value.trim(), em = $("se").value.trim();
+    if (!n || !/^\S+@\S+\.\S+$/.test(em)){ out.className = "sendmsg warn"; out.textContent = "Preencha nome e um e-mail válido."; return; }
+    if (!st.last){ out.className = "sendmsg warn"; out.textContent = "Ajuste a peça para gerar um orçamento válido antes de enviar."; return; }
+    const file = st.mode === "res" ? st.stlFile : st.dxfFile;
+    const fields = Object.assign({_subject:"Orçamento Layer72 – " + st.last.summary.Servico + " – " + n, _replyto:em, Nome:n, Email:em, WhatsApp:$("sp").value.trim() || "—", Observacoes:$("so").value.trim() || "—"}, st.last.summary, freteResumo());
+    sendMail(fields, file, out, $("sendBtn"));
+  });
+  const cf = $("cform");
+  if (cf) cf.addEventListener("submit", e => {
+    e.preventDefault();
+    const out = $("formmsg"), n = $("cn").value.trim(), em = $("ce").value.trim();
+    if (!n || !/^\S+@\S+\.\S+$/.test(em)){ out.className = "formmsg warn"; out.textContent = "Preencha nome e um e-mail válido."; return; }
+    sendMail({_subject:"Contato Layer72 – " + $("ct").value + " – " + n, _replyto:em, Nome:n, Email:em, Empresa:$("cc").value || "—", Assunto:$("ct").value, Mensagem:$("cm").value || "—"}, null, out, cf.querySelector("button[type=submit]"));
+  });
+
+  // ================= início: exemplos carregados =================
+  st.raw.res = exampleSTL(); st.raw.cnc = exampleDXF(); st.rot = autoOps(st.raw.res); applyUnits();
+  document.querySelectorAll(".orient button").forEach(b => b.addEventListener("click", () => {
+    const r = b.dataset.r;
+    if (r === "auto"){ st.rot = autoOps(st.raw.res); st.rotMode = "auto"; }
+    else if (r === "orig"){ st.rot = []; st.rotMode = "orig"; }
+    else { st.rot = simplify(st.rot.concat(r)); st.rotMode = "custom"; }
+    applyUnits(); refresh(true);
+  }));
+  ["uMm","uIn"].forEach(id => $(id).addEventListener("click", e => {
+    st.unit[st.mode] = e.currentTarget.dataset.u; applyUnits(); showUnit(); refresh(true);
+    const meta = $("filemeta"); meta.className = "filemeta";
+    meta.textContent = "Medidas recalculadas em " + (st.unit[st.mode] === "in" ? "polegadas (1 pol = 25,4 mm)." : "milímetros.");
+  }));
+  setMode("res");
+})();
+
+(function(){
+  // ---------- animação: peça construída camada por camada ----------
+  const cv = document.getElementById("build"), ctx = cv.getContext("2d");
+  const W = cv.width, H = cv.height, N = 46, DZ = 7.2;
+  const prof = t => 0.5 + 0.28*Math.sin(t*Math.PI*1.15 + 0.4) - 0.16*t + (t > 0.78 ? -0.35*(t-0.78)/0.22 : 0);
+  document.getElementById("layerT").textContent = (N * 50).toLocaleString("pt-BR");
+  const lerp = (a,b,t) => a + (b - a) * t;
+  function mix(c1, c2, t){ const a = parseInt(c1.slice(1),16), b = parseInt(c2.slice(1),16);
+    const r = Math.round(lerp(a>>16, b>>16, t)), g = Math.round(lerp((a>>8)&255, (b>>8)&255, t)), bl = Math.round(lerp(a&255, b&255, t));
+    return `rgb(${r},${g},${bl})`; }
+  function diamond(cx, cy, w, h){ ctx.beginPath(); ctx.moveTo(cx, cy+h); ctx.lineTo(cx+w, cy); ctx.lineTo(cx, cy-h); ctx.lineTo(cx-w, cy); ctx.closePath(); }
+  function frame(p){
+    ctx.clearRect(0,0,W,H);
+    const cx = W/2, base = H*0.78;
+    // plataforma
+    diamond(cx, base+14, 190, 95); ctx.fillStyle = "#2A2840"; ctx.fill();
+    diamond(cx, base+8, 190, 95); ctx.fillStyle = "#34314F"; ctx.fill();
+    const k = Math.floor(p * N);
+    for (let i = 0; i < k; i++){
+      const t = i / N, w = 150 * prof(t), y = base - i * DZ;
+      diamond(cx, y + 4, w, w/2); ctx.fillStyle = mix("#3D2A8C", "#5B3CC4", t); ctx.fill();
+      diamond(cx, y, w, w/2); ctx.fillStyle = mix("#5B3CC4", "#8E7BE0", t); ctx.fill();
+    }
+    if (k < N){
+      const t = k / N, w = 150 * prof(t), y = base - k * DZ;
+      ctx.save(); ctx.shadowColor = "rgba(242,165,65,.9)"; ctx.shadowBlur = 24;
+      diamond(cx, y, w, w/2); ctx.fillStyle = "#F2A541"; ctx.fill(); ctx.restore();
+      // folha de luz UV
+      const g = ctx.createLinearGradient(0, y - 60, 0, y);
+      g.addColorStop(0, "rgba(142,123,224,0)"); g.addColorStop(1, "rgba(142,123,224,.28)");
+      ctx.fillStyle = g; ctx.fillRect(cx - 200, y - 60, 400, 60);
+    } else {
+      const t = (N-1)/N, w = 150 * prof(t), y = base - (N-1) * DZ;
+      diamond(cx, y, w, w/2); ctx.fillStyle = "#F2A541"; ctx.fill();
+    }
+    document.getElementById("layerN").textContent = (Math.min(k, N) * 50).toLocaleString("pt-BR");
+  }
+  const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce){ frame(1); }
+  else {
+    frame(0.62);
+    let t0 = null; const dur = 9000, hold = 1800;
+    function loop(ts){ if (t0 === null) t0 = ts - dur*0.62; const e = (ts - t0) % (dur + hold); frame(Math.min(e / dur, 1)); requestAnimationFrame(loop); }
+    requestAnimationFrame(loop);
+  }
+})();
+</script>
+</body>
+</html>
